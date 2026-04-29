@@ -18,47 +18,105 @@ class GuesserTest : public ::testing::Test
 TEST(GuesserTest, exact_matching_distance)
 {
   Guesser object("ABC");
-  ASSERT_EQ( 0 , object.distance("ABC);
+  ASSERT_EQ( 0 , object.distance("ABC"));
 }
 
 TEST(GuesserTest, lower_case_distance)
 {
   Guesser object("ABC");
-  ASSERT_EQ( 3, object.distance("abc");
+  ASSERT_EQ( 3, object.distance("abc"));
 }
 
 TEST(GuesserTest, empty_distance)
 {
   Guesser object("ABC");
-  ASSERT_EQ( 3, object.distace("");
+  ASSERT_EQ( 3, object.distance(""));
 }
 
 TEST(GuesserTest, large_guess_distance)
 {
   Guesser object("ABC");
-  ASSERT_EQ( 3, object.distance("qwertyyuiptypou");
+  ASSERT_EQ( 3, object.distance("qwertyyuiptypou"));
 }
 
 TEST(GuesserTest, numbers_special_chars_distance)
 {
   Guesser object("123&$%");
-  ASSERT_EQ( 4, object.distance("123&*@");
+  ASSERT_EQ( 2, object.distance("123&*@"));
 }
 
 TEST(GuesserTest, matching_at_end_distance)
 {
   Guesser object("ZXCabc");
-  ASSERT_EQ( 3, object.distance("POIabc");
+  ASSERT_EQ( 3, object.distance("POIabc"));
 }
 
 TEST(GuesserTest, large_guess_end_different_distance)
 {
   Guesser object("ABCDE");
-  ASSERT_EQ( 5, object.distance("ABCDEfghijkl );
+  ASSERT_EQ( 5, object.distance("ABCDEfghijkl"));
 }
 
 TEST(GuesserTest, guess_end_different_distance)
 {
   Guesser object("ABCDE");
-  ASSERT_EQ( 1, object.distance("ABCDEf);
+  ASSERT_EQ( 1, object.distance("ABCDEf"));
+}
+
+TEST(GuesserTest, 32_distance)
+{
+  Guesser object("qwoepwqeowqiepqoieqpoiepqoiealksdjflkadsjflkzasdfsadfasfdasdfsafd");
+  ASSERT_EQ( 32, object.distance("A"));
+}
+
+TEST(GuesserTest, same_match)
+{
+  Guesser object("ABC");
+  ASSERT_TRUE(object.match("ABC"));
+}
+
+
+TEST(GuesserTest, no_match_match)
+{
+  Guesser object("ABC");
+  ASSERT_FALSE(object.match("xyz"));
+}
+
+TEST(GuesserTest, number__match)
+{
+  Guesser object("123!@#");
+  ASSERT_TRUE(object.match("123!@#"));
+}
+
+TEST(GuesserTest, lower__match)
+{
+  Guesser object("ABC");
+  ASSERT_FALSE(object.match("abc"));
+}
+
+TEST(GuesserTest, no_attempts_match)
+{
+  Guesser object("ABC");
+  object.match("AB");
+  object.match("AB");
+  object.match("AB");
+  ASSERT_FALSE(object.match("ABC"));
+}
+
+
+TEST(GuesserTest, attempt_remaining_match)
+{
+  Guesser object("ABC");
+  object.match("AB");
+  object.match("AB");
+  ASSERT_TRUE(object.match("ABC"));
+}
+
+
+TEST(GuesserTest, locked_distance_match)
+
+{
+  Guesser object("ABC");
+  object.match("zcxvycxzuvucxzvu"); 
+  ASSERT_FALSE(object.match("ABC"));
 }
